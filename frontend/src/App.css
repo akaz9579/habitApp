@@ -1,0 +1,1075 @@
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) 112px;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0 var(--space-5);
+}
+
+.top-bar__title {
+  flex: 1;
+  font-size: 20px;
+}
+
+.view--grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.view--compact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .view--compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.view--list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-2);
+}
+
+/* ==========================================================================
+   Buttons and chips
+   ========================================================================== */
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.icon-btn--lg {
+  width: 48px;
+  height: 48px;
+}
+
+.icon-btn:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+}
+
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--on-accent);
+  transition: filter 0.15s;
+}
+
+.add-btn:hover {
+  filter: brightness(1.08);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  transition: border-color 0.15s, filter 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn--primary:hover:not(:disabled) {
+  border-color: var(--accent);
+  filter: brightness(1.08);
+}
+
+.btn--quiet {
+  background: transparent;
+}
+
+.btn--danger {
+  background: transparent;
+  color: var(--danger);
+}
+
+.btn--danger-solid {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--bg);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.chip svg {
+  color: var(--habit, var(--accent));
+}
+
+.chip--button:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+/* ==========================================================================
+   Habit icon and check button
+   ========================================================================== */
+
+.habit-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: var(--habit-soft);
+  color: var(--habit);
+}
+
+.habit-icon--sm {
+  width: 34px;
+  height: 34px;
+}
+
+.habit-icon--lg {
+  width: 64px;
+  height: 64px;
+}
+
+.check-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-faint);
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.check-btn--sm {
+  width: 34px;
+  height: 34px;
+}
+
+.check-btn:hover:not(:disabled) {
+  border-color: var(--habit);
+  color: var(--habit);
+}
+
+.check-btn.is-done {
+  background: var(--habit);
+  border-color: var(--habit);
+  color: var(--on-accent);
+}
+
+.check-btn[aria-busy='true'] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+/* ==========================================================================
+   Weekly grid
+   ========================================================================== */
+
+.habit-grid {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  min-height: calc(var(--cell, 12px) * 7 + var(--gap, 4px) * 6);
+}
+
+.habit-grid__cells {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell));
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  gap: var(--gap);
+}
+
+/* Soft fade on the oldest weeks so the history reads as continuing */
+.cell.fade-1 {
+  opacity: 0.3;
+}
+
+.cell.fade-2 {
+  opacity: 0.6;
+}
+
+.habit-grid--labeled {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  grid-template-areas:
+    '. months'
+    'days cells';
+}
+
+.habit-grid--labeled .habit-grid__cells {
+  grid-area: cells;
+}
+
+.habit-grid__months {
+  grid-area: months;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  column-gap: var(--gap);
+  margin-bottom: var(--space-2);
+  color: var(--text-faint);
+  font-size: 11px;
+}
+
+.habit-grid__months span {
+  white-space: nowrap;
+}
+
+.habit-grid__weekdays {
+  grid-area: days;
+  display: grid;
+  grid-template-rows: repeat(7, var(--cell));
+  row-gap: var(--gap);
+  align-items: center;
+  color: var(--text-faint);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.cell {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: var(--habit-empty);
+}
+
+.cell.is-done {
+  background: var(--habit-fill);
+}
+
+.cell.is-future {
+  background: transparent;
+}
+
+.cell.is-today {
+  outline: 1.5px solid var(--habit);
+  outline-offset: -1.5px;
+}
+
+.cell.is-today.is-done {
+  outline-color: color-mix(in oklch, var(--habit) 55%, var(--text));
+}
+
+/* ==========================================================================
+   Grid card (main view)
+   ========================================================================== */
+
+.habit-card {
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--habit-tint);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.habit-card:hover {
+  border-color: color-mix(in oklch, var(--habit) 35%, var(--border));
+}
+
+.habit-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: 14px;
+}
+
+.habit-card__title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  text-align: left;
+}
+
+.habit-card__name {
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Compact card (month view)
+   ========================================================================== */
+
+.compact-card {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--habit-tint);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.compact-card:hover {
+  border-color: color-mix(in oklch, var(--habit) 35%, var(--border));
+}
+
+.compact-card__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.compact-card__title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  text-align: left;
+}
+
+.compact-card__name {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compact-card__month {
+  color: var(--text-faint);
+  font-size: 11px;
+}
+
+.compact-card__days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: var(--space-3);
+}
+
+.compact-card__days .cell {
+  aspect-ratio: 1;
+}
+
+.compact-card__days .cell.is-hidden {
+  visibility: hidden;
+}
+
+.compact-card__days .cell.is-upcoming {
+  opacity: 0.45;
+}
+
+/* ==========================================================================
+   Row (list view)
+   ========================================================================== */
+
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--habit-tint);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.habit-row:hover {
+  border-color: color-mix(in oklch, var(--habit) 35%, var(--border));
+}
+
+.habit-row__title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  text-align: left;
+}
+
+.habit-row__name {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.habit-row__streak {
+  flex: none;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.habit-row__streak .mono {
+  color: var(--text);
+}
+
+/* Reordering */
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 34px;
+  margin-left: -4px;
+  border-radius: var(--radius);
+  color: var(--text-faint);
+  cursor: grab;
+  touch-action: none;
+}
+
+.drag-handle:hover {
+  color: var(--text);
+}
+
+.view--list.is-sorting .habit-row {
+  transition: transform 0.15s ease;
+}
+
+.view--list.is-sorting,
+.view--list.is-sorting * {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.habit-row.is-dragging {
+  position: relative;
+  z-index: 2;
+  border-color: var(--habit);
+  transition: none !important;
+}
+
+/* ==========================================================================
+   Detail view
+   ========================================================================== */
+
+.panel {
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.detail__bar {
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--space-2);
+}
+
+.detail__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+}
+
+.detail__name {
+  font-size: 26px;
+  overflow-wrap: anywhere;
+}
+
+.detail__desc {
+  margin-top: 2px;
+  color: var(--text-muted);
+}
+
+.detail__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.detail__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.month-cal__weekdays,
+.month-cal__days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.month-cal__weekdays {
+  margin-bottom: var(--space-2);
+  color: var(--text-faint);
+  font-size: 12px;
+  text-align: center;
+}
+
+.month-cal__day {
+  height: 44px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 14px;
+  transition: background-color 0.15s;
+}
+
+.month-cal__day:hover:not(:disabled) {
+  background: var(--habit-empty);
+}
+
+.month-cal__day.is-done {
+  background: var(--habit);
+  color: var(--on-accent);
+}
+
+.month-cal__day.is-done:hover:not(:disabled) {
+  background: var(--habit);
+  filter: brightness(1.08);
+}
+
+.month-cal__day.is-today {
+  border: 1.5px solid var(--habit);
+}
+
+.month-cal__day:disabled {
+  color: var(--text-faint);
+}
+
+.month-cal__day.is-outside {
+  opacity: 0.45;
+}
+
+.month-cal__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: 14px;
+}
+
+.month-cal__arrows {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.month-cal__hint {
+  margin-top: var(--space-3);
+  color: var(--text-faint);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ==========================================================================
+   View switcher, notices, empty and error states
+   ========================================================================== */
+
+.view-switcher {
+  position: fixed;
+  bottom: var(--space-4);
+  left: 50%;
+  z-index: 10;
+  display: flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  transform: translateX(-50%);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.view-switcher__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  font-size: 12px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.view-switcher__item:hover {
+  color: var(--text);
+}
+
+.view-switcher__item.is-active {
+  background: color-mix(in oklch, var(--accent) 20%, var(--surface-2));
+  color: var(--text);
+}
+
+.notice {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  z-index: 20;
+  max-width: calc(100% - 32px);
+  padding: 10px 14px;
+  transform: translateX(-50%);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: 64px var(--space-4);
+  text-align: center;
+}
+
+.state h2 {
+  font-size: 18px;
+}
+
+.state p {
+  max-width: 38ch;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Dialogs and forms
+   ========================================================================== */
+
+.dialog {
+  width: min(480px, calc(100% - 32px));
+  max-height: 85vh;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  background: var(--scrim);
+}
+
+.dialog__inner {
+  padding: 20px;
+}
+
+.dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.dialog__head h2 {
+  font-size: 18px;
+}
+
+.form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: none;
+}
+
+.field__label {
+  margin-bottom: 2px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.field input[type='text'],
+.field textarea {
+  width: 100%;
+  padding: 10px var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-size: 15px;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.swatch {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius);
+  background: var(--swatch);
+  cursor: pointer;
+}
+
+.swatch.is-active {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.swatch--custom {
+  border: 2px dashed var(--border-strong);
+}
+
+.swatch--custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.swatch--custom:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.icon-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 6px;
+}
+
+.icon-picker__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text-muted);
+}
+
+.icon-picker__item:hover {
+  color: var(--text);
+}
+
+.icon-picker__item.is-active {
+  border-color: var(--habit);
+  background: var(--habit-soft);
+  color: var(--habit);
+}
+
+.form__error {
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.confirm__message {
+  margin-bottom: var(--space-4);
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Settings
+   ========================================================================== */
+
+.settings__section + .settings__section {
+  margin-top: 22px;
+}
+
+.settings__label {
+  margin-bottom: 10px;
+  color: var(--text-faint);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.theme-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: var(--space-2);
+}
+
+.theme-tile {
+  display: grid;
+  gap: 6px;
+  padding: 6px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  text-align: left;
+}
+
+.theme-tile.is-active {
+  border-color: var(--accent);
+}
+
+.theme-tile__preview {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 46px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.theme-tile__surface {
+  flex: 1;
+  height: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.theme-tile__accent {
+  width: 12px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+}
+
+.theme-tile__name {
+  font-size: 13px;
+}
+
+.toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle__track {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--surface-2);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.toggle__track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--text-muted);
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.toggle input:checked + .toggle__track {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.toggle input:checked + .toggle__track::after {
+  transform: translateX(16px);
+  background: var(--on-accent);
+}
+
+.toggle input:focus-visible + .toggle__track {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.segmented {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.segmented__item {
+  height: 32px;
+  padding: 0 var(--space-3);
+  border-radius: 3px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.segmented__item.is-active {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ==========================================================================
+   Skeletons
+   ========================================================================== */
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  animation: skeleton-pulse 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes skeleton-pulse {
+  from {
+    opacity: 0.55;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
+.habit-card--skeleton,
+.compact-card--skeleton,
+.habit-row--skeleton {
+  background: var(--surface);
+  cursor: default;
+}
+
+.skeleton--icon,
+.skeleton--check {
+  flex: none;
+  width: 44px;
+  height: 44px;
+}
+
+.skeleton--check {
+  width: 48px;
+  height: 48px;
+}
+
+.skeleton--icon-sm,
+.skeleton--check-sm {
+  flex: none;
+  width: 34px;
+  height: 34px;
+}
+
+.skeleton--text {
+  width: 40%;
+  height: 16px;
+}
+
+.habit-row--skeleton .skeleton--text {
+  flex: 1;
+}
+
+.skeleton--grid {
+  height: 108px;
+}
+
+.skeleton--month {
+  height: 96px;
+  margin-top: var(--space-3);
+}
+
+/* ==========================================================================
+   Small screens
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  .app {
+    padding-inline: var(--space-3);
+  }
+
+  .habit-card {
+    padding: 14px;
+  }
+
+  .detail__name {
+    font-size: 22px;
+  }
+
+  .view-switcher__item {
+    padding: 0 var(--space-3);
+  }
+}
