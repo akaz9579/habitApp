@@ -1,0 +1,9 @@
+# Secrets: set these in Vercel's Environment Variables instead
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+.vercel/
+.DS_Store

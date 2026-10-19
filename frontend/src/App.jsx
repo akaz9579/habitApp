@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GearSix, Plus } from '@phosphor-icons/react';
-import { api } from './api';
+import { api, isUnauthorized, savePasscode } from './api';
 import { useSettings } from './theme/SettingsContext';
 import { useToday } from './lib/useToday';
 import { toKey } from './lib/dates';
@@ -11,6 +11,7 @@ import HabitDetail from './components/HabitDetail';
 import HabitForm from './components/HabitForm';
 import SettingsPanel from './components/SettingsPanel';
 import ConfirmDialog from './components/ConfirmDialog';
+import PasscodeScreen from './components/PasscodeScreen';
 import ViewSwitcher from './components/ViewSwitcher';
 import { ViewSkeleton } from './components/Skeleton';
 import './App.css';
@@ -29,7 +30,8 @@ function App() {
     const today = useToday();
 
     const [habits, setHabits] = useState([]);
-    const [status, setStatus] = useState('loading'); // loading | ready | error
+    const [status, setStatus] = useState('loading'); // loading | ready | error | locked
+    const [wrongPasscode, setWrongPasscode] = useState(false);
     const [pending, setPending] = useState(() => new Set()); // `${id}:${date}` keys in flight
     const [openId, setOpenId] = useState(null);
     const [form, setForm] = useState(null); // null | { habit?: Habit }
@@ -50,7 +52,7 @@ function App() {
                 setHabits(data);
                 setStatus('ready');
             })
-            .catch(() => setStatus('error'));
+            .catch((err) => setStatus(isUnauthorized(err) ? 'locked' : 'error'));
     }, []);
 
     useEffect(() => {
@@ -61,6 +63,12 @@ function App() {
     const retry = () => {
         setStatus('loading');
         loadHabits();
+    };
+
+    const unlock = (code) => {
+        savePasscode(code);
+        setWrongPasscode(true); // shown only if the next load is locked again
+        retry();
     };
 
     const replaceHabit = (next) => setHabits((list) => list.map((h) => (h._id === next._id ? next : h)));
@@ -136,6 +144,8 @@ function App() {
     const openHabit = habits.find((h) => h._id === openId);
     const Item = VIEW_ITEMS[settings.view] ?? HabitCard;
 
+    const showChrome = !openHabit && status !== 'locked';
+
     let content;
     if (openHabit) {
         content = (
@@ -153,6 +163,8 @@ function App() {
         );
     } else if (status === 'loading') {
         content = <ViewSkeleton view={settings.view} />;
+    } else if (status === 'locked') {
+        content = <PasscodeScreen wrong={wrongPasscode} onSubmit={unlock} />;
     } else if (status === 'error') {
         content = (
             <div className="state" role="alert">
@@ -205,7 +217,7 @@ function App() {
 
     return (
         <div className="app">
-            {!openHabit && (
+            {showChrome && (
                 <header className="top-bar">
                     <button
                         type="button"
@@ -224,7 +236,7 @@ function App() {
 
             <main className="app__main">{content}</main>
 
-            {!openHabit && <ViewSwitcher view={settings.view} onChange={(view) => update({ view })} />}
+            {showChrome && <ViewSwitcher view={settings.view} onChange={(view) => update({ view })} />}
 
             {notice && (
                 <div className="notice" role="status">
