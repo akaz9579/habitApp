@@ -17,6 +17,8 @@
 
 .top-bar__title {
   flex: 1;
+  font-family: var(--font-mono);
+  font-weight: 400; /* Monocraft has one weight; avoid faux bold */
   font-size: 20px;
 }
 
@@ -347,8 +349,9 @@
 
 .habit-card__name {
   overflow: hidden;
-  font-size: 17px;
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-weight: 400; /* Monocraft has one weight; avoid faux bold */
+  font-size: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -385,8 +388,9 @@
 
 .compact-card__name {
   overflow: hidden;
-  font-size: 15px;
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-weight: 400; /* Monocraft has one weight; avoid faux bold */
+  font-size: 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -446,7 +450,9 @@
 
 .habit-row__name {
   overflow: hidden;
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-weight: 400; /* Monocraft has one weight; avoid faux bold */
+  font-size: 15px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -529,7 +535,9 @@
 }
 
 .detail__name {
-  font-size: 26px;
+  font-family: var(--font-mono);
+  font-weight: 400; /* Monocraft has one weight; avoid faux bold */
+  font-size: 24px;
   overflow-wrap: anywhere;
 }
 
@@ -1080,7 +1088,7 @@
   }
 
   .detail__name {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .view-switcher__item {
