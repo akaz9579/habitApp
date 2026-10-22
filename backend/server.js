@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const express = require('express');
-const mongoose = require('mongoose');
+const { connectDb } = require('./db');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -11,11 +11,20 @@ const PORT = process.env.PORT || 5001;
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection. Fail fast instead of hanging when the database is
-// unreachable (for example, an Atlas IP allowlist that blocks the host).
-mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 8000 })
-    .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
+// Start connecting right away so the first request is faster. Requests also
+// wait for (and if needed retry) the connection below.
+connectDb().catch((err) => console.error('MongoDB connection error:', err.message));
+
+// Health check, open without the passcode. Reports only whether the
+// database is reachable, so cold starts can be diagnosed from anywhere.
+app.get('/api/health', async (req, res) => {
+    try {
+        await connectDb();
+        res.json({ ok: true, db: 'connected' });
+    } catch (err) {
+        res.status(503).json({ ok: false, db: 'unreachable', error: err.name });
+    }
+});
 
 // Passcode lock. When APP_PASSCODE is set (on the hosted site), every API
 // request must send it in the X-Passcode header. Unset locally, so dev stays open.
@@ -28,6 +37,17 @@ const passcodeMatches = (given) => {
 app.use('/api', (req, res, next) => {
     if (!process.env.APP_PASSCODE || passcodeMatches(req.get('x-passcode'))) return next();
     res.status(401).json({ message: 'Passcode required' });
+});
+
+// Make sure the database is connected before any data route runs.
+app.use('/api', async (req, res, next) => {
+    try {
+        await connectDb();
+        next();
+    } catch (err) {
+        console.error('MongoDB connection error:', err.message);
+        res.status(503).json({ message: 'Database unavailable. Try again in a moment.' });
+    }
 });
 
 // Routes

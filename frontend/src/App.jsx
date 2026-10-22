@@ -46,13 +46,22 @@ function App() {
         noticeTimer.current = setTimeout(() => setNotice(''), 4000);
     }, []);
 
+    // A cold server can fail its first request while it connects to the
+    // database, so retry a couple of times (skeletons stay up) before
+    // showing the error screen.
     const loadHabits = useCallback(() => {
-        api.list()
-            .then((data) => {
-                setHabits(data);
-                setStatus('ready');
-            })
-            .catch((err) => setStatus(isUnauthorized(err) ? 'locked' : 'error'));
+        const attempt = (retriesLeft) =>
+            api.list()
+                .then((data) => {
+                    setHabits(data);
+                    setStatus('ready');
+                })
+                .catch((err) => {
+                    if (isUnauthorized(err)) return setStatus('locked');
+                    if (retriesLeft > 0) return setTimeout(() => attempt(retriesLeft - 1), 2000);
+                    setStatus('error');
+                });
+        attempt(2);
     }, []);
 
     useEffect(() => {
